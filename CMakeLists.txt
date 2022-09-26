@@ -9,6 +9,8 @@ find_package(Qt6 6.2 COMPONENTS Quick Core Network REQUIRED)
 
 qt_add_executable(appParseData
     main.cpp
+    dataparser.h
+    dataparser.cpp
 )
 
 qt_add_qml_module(appParseData
