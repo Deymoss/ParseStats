@@ -7,8 +7,14 @@
 #include <QNetworkAccessManager>
 #include <QString>
 #include <QUrl>
+#include <QDate>
 #include <QDebug>
 #include <QVector>
+#include <QJsonDocument>
+#include <QtConcurrent>
+#include <QFuture>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QRegularExpression>
 
 class DataParser : public QObject
@@ -17,6 +23,7 @@ class DataParser : public QObject
 public:
     DataParser(QObject *parent = nullptr);
     void requestFunc(int date);
+    Q_INVOKABLE void takeData(const int amount);
     ~DataParser();
 private:
     QNetworkAccessManager *m_networkManager = nullptr;
@@ -26,12 +33,17 @@ private:
     QString data;
     QString pmRequestLink;
     QUrl url;
+    QDate date = QDate::currentDate();
     QVector<QString> colors;
-    int page=12;
-    void requestFunc(int date, int page);
+    int currentAmount = 0;
+    int amount = 0;
+    int page=1;
     QString formingCorrectLink(QString request);
+    QVariantList parseData();
 private slots:
     void replyFinished(QNetworkReply *reply);
+signals:
+    void sendData(QVariantList data);
 };
 
 #endif // DATAPARSER_H

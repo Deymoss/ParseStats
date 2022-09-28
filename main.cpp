@@ -1,11 +1,12 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <dataparser.h>
 
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-
+    qmlRegisterType<DataParser>("com.myself", 1, 0, "Provider");
     QQmlApplicationEngine engine;
     const QUrl url(u"qrc:/ParseData/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

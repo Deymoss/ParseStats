@@ -5,7 +5,7 @@ project(ParseData VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.2 COMPONENTS Quick Core Network REQUIRED)
+find_package(Qt6 6.4 COMPONENTS Quick Core Network Concurrent REQUIRED)
 
 qt_add_executable(appParseData
     main.cpp
@@ -28,7 +28,7 @@ set_target_properties(appParseData PROPERTIES
 )
 
 target_link_libraries(appParseData
-    PRIVATE Qt6::Quick)
+    PRIVATE Qt6::Quick Qt${QT_VERSION_MAJOR}::Concurrent)
 
 install(TARGETS appParseData
     BUNDLE DESTINATION .
