@@ -5,29 +5,55 @@ import QtMultimedia 5.15
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs
 import com.myself 1.0
+import QtQuick.Shapes 1.4
 ApplicationWindow {
     width: 1280
     height: 720
     visible: true
     property var allResults: []
+    property int currentPos: 0
     Connections {
         target: obj
-        onSendData: {
+       function onSendData(data) {
             data.forEach((one) => {
              allResults.push(one)
+             griddate.processingVisible = true
+             timer.start()
              })
-
-            console.log(allResults)
-            console.log(allResults.length)
         }
     }
+    Timer {
+        id: timer
+        interval: 10
+        repeat: true
+        running: false
+        onTriggered: {
+            if(allResults.length > currentPos) {
+            griddate.modelL.append({col: allResults[currentPos] === true? "#CC0000" : "black"})
+                currentPos++
+            } else {
+                stop()
+                allResults = []
+                griddate.processingVisible = false
+            }
+        }
 
+    }
     Provider {
         id: obj
         objectName: "object"
     }
+
+    Component {
+        id: gridData
+        DataGrid{}
+    }
+    Component {
+        id: chartsPg
+        ChartStatistics{}
+    }
     background: Rectangle {
-        color: "#1A7A63"
+        color: "#9999CC"
     }
     Button {
         id: parseButton
@@ -39,7 +65,7 @@ ApplicationWindow {
         background: Rectangle {
             anchors.fill: parent
             radius: 5
-            color: parseButton.pressed ? "#002B70" : "#2973B8"
+            color: parseButton.pressed ? "#330066" : "#333366"
         }
         onClicked: {
             obj.takeData(genderBox.currentValue)
@@ -60,21 +86,20 @@ ApplicationWindow {
             left: parent.left
             right: parent.rigth
             bottomMargin: 20
+            topMargin: 10
         }
         width: parent.width
         height: parent.height
         Item {
-            id: gridPage
-            Rectangle {
-                anchors.fill: parent
-                color: "#2973B8"
+        DataGrid {
+            id: griddate
+            anchors.fill: parent
             }
         }
         Item {
-            id: chartsPage
-            Rectangle {
+            ChartStatistics {
+                id: chartsPag
                 anchors.fill: parent
-                color: "#9C4529"
             }
         }
     }
@@ -93,6 +118,7 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.left: comboText.right
         anchors.leftMargin: 10
+        anchors.topMargin: 10
         height: parent.height / 12
         width: parent.width / 4
         model: [100, 1000, 10000, 100000]

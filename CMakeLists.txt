@@ -5,7 +5,7 @@ project(ParseData VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.4 COMPONENTS Quick Core Network Concurrent REQUIRED)
+find_package(Qt6 6.4 COMPONENTS Quick Core Network Concurrent Charts REQUIRED)
 
 qt_add_executable(appParseData
     main.cpp
@@ -16,7 +16,7 @@ qt_add_executable(appParseData
 qt_add_qml_module(appParseData
     URI ParseData
     VERSION 1.0
-    QML_FILES main.qml 
+    QML_FILES main.qml DataGrid.qml ChartStatistics.qml
 )
 
 set_target_properties(appParseData PROPERTIES
@@ -28,7 +28,7 @@ set_target_properties(appParseData PROPERTIES
 )
 
 target_link_libraries(appParseData
-    PRIVATE Qt6::Quick Qt${QT_VERSION_MAJOR}::Concurrent)
+    PRIVATE Qt6::Quick Qt${QT_VERSION_MAJOR}::Concurrent Qt${QT_VERSION_MAJOR}::Charts)
 
 install(TARGETS appParseData
     BUNDLE DESTINATION .
