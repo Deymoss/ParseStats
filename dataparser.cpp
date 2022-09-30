@@ -9,6 +9,7 @@ DataParser::DataParser(QObject *parent)
             SIGNAL(finished(QNetworkReply *)),
             this,
             SLOT(replyFinished(QNetworkReply *)));
+    stats.reserve(20);
 }
 
 void DataParser::takeData(const int amount)
@@ -43,8 +44,18 @@ void DataParser::replyFinished(QNetworkReply *reply)
         QFuture<QVariantList> dataGrabber = QtConcurrent::run(&DataParser::parseData, this);
 
         dataGrabber.waitForFinished();
-
+        QList result = dataGrabber.result().toList();
         emit sendData(dataGrabber.result());
+        for(QVariant &a : result) {
+            if(lastResult == a.toBool()) {
+                ++counter;
+            } else {
+                stats[counter] +=1;
+                counter = 1;
+            }
+            lastResult = a.toBool();
+        }
+        qDebug()<<stats;
         if (currentAmount <= amount) {
             takeData(amount);
         }

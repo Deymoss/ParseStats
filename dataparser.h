@@ -39,6 +39,9 @@ private:
     int amount = 0;
     int page=100; // set 100 for check last page
     QString formingCorrectLink(QString request);
+    QVector<int> stats = QVector<int>(20);
+    int counter = 1;
+    bool lastResult = true;
     QVariantList parseData();
 private slots:
     void replyFinished(QNetworkReply *reply);
