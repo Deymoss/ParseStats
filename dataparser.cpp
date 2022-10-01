@@ -22,9 +22,14 @@ void DataParser::takeData(const int amount)
     //    checkNextPage++;
     url.setUrl(pmRequestLink);
     m_networkRequest->setUrl(url);
-    qDebug()<<page;
+    //qDebug()<<page;
     page != 1 ? page-- : page = 0;
     m_networkManager->get(*m_networkRequest);
+}
+
+QVector<int> DataParser::takeStats()
+{
+    return stats;
 }
 
 void DataParser::replyFinished(QNetworkReply *reply)
@@ -55,9 +60,11 @@ void DataParser::replyFinished(QNetworkReply *reply)
             }
             lastResult = a.toBool();
         }
-        qDebug()<<stats;
+        //qDebug()<<stats;
         if (currentAmount <= amount) {
             takeData(amount);
+        } else {
+            emit endOfProcess();
         }
     }
 }

@@ -24,6 +24,7 @@ public:
     DataParser(QObject *parent = nullptr);
     void requestFunc(int date);
     Q_INVOKABLE void takeData(const int amount);
+    Q_INVOKABLE QVector<int> takeStats();
     ~DataParser();
 private:
     QNetworkAccessManager *m_networkManager = nullptr;
@@ -47,6 +48,7 @@ private slots:
     void replyFinished(QNetworkReply *reply);
 signals:
     void sendData(QVariantList data);
+    void endOfProcess();
 };
 
 #endif // DATAPARSER_H
