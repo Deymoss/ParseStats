@@ -10,7 +10,7 @@ Page {
     property bool processingVisible: false
     background: Rectangle {
         anchors.fill: parent
-        color: "#666666"
+        color: "#996699"
     }
     Rectangle {
         id: loadingRect

@@ -53,7 +53,7 @@ ApplicationWindow {
         ChartStatistics{}
     }
     background: Rectangle {
-        color: "#9999CC"
+        color: "#5d8c96"
     }
     Button {
         id: parseButton
@@ -65,7 +65,7 @@ ApplicationWindow {
         background: Rectangle {
             anchors.fill: parent
             radius: 5
-            color: parseButton.pressed ? "#330066" : "#333366"
+            color: parseButton.pressed ? "#5f0c16" : "#95242a"
         }
         onClicked: {
             obj.takeData(genderBox.currentValue)
@@ -179,8 +179,8 @@ ApplicationWindow {
             width: parent.width
             height: parent.height
             radius: 13
-            color: "#000000"
-            opacity: 0.3
+            color: "#95242a"
+            opacity: 0.7
         }
     }
 }
