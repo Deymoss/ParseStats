@@ -4,10 +4,11 @@ import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 import QtCharts
 import QtQuick.Layouts 1.3
+import Style 1.0
 Page {
     background: Rectangle {
         anchors.fill: parent
-        color: "#669999"
+        color: Style.slideColorSecondary
     }
 
     property var stats: []

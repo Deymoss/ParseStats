@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     qmlRegisterType<DataParser>("com.myself", 1, 0, "Provider");
+    qmlRegisterSingletonType(QUrl("qrc:/ParseData/Style.qml"), "Style", 1, 0, "Style");
     QQmlApplicationEngine engine;
     const QUrl url(u"qrc:/ParseData/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

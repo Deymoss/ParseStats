@@ -6,6 +6,8 @@ import QtQuick.Layouts 1.3
 import QtQuick.Dialogs
 import com.myself 1.0
 import QtQuick.Shapes 1.4
+import QtQuick.Controls.Material 2.3
+import Style 1.0
 ApplicationWindow {
     width: 1280
     height: 720
@@ -39,6 +41,29 @@ ApplicationWindow {
         }
 
     }
+    Rectangle {
+        anchors {
+            right: parent.right
+            rightMargin: 10
+            verticalCenter: genderBox.verticalCenter
+        }
+        height: parent.height / 14
+        width: height
+        radius: height / 2
+        color: "#5F000000"
+        Image {
+            height: parent.height / 1.3
+            width: height
+            anchors.centerIn: parent
+            fillMode: Image.PreserveAspectFit
+            source: Style.lightTheme ? "qrc:/imgs/icons/light.png" : "qrc:/imgs/icons/dark.png"
+        }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: Style.lightTheme ? Style.lightTheme = false : Style.lightTheme = true
+        }
+    }
+
     Provider {
         id: obj
         objectName: "object"
@@ -53,7 +78,7 @@ ApplicationWindow {
         ChartStatistics{}
     }
     background: Rectangle {
-        color: "#5d8c96"
+        color: Style.appBackColor
     }
     Button {
         id: parseButton
@@ -65,16 +90,24 @@ ApplicationWindow {
         background: Rectangle {
             anchors.fill: parent
             radius: 5
-            color: parseButton.pressed ? "#5f0c16" : "#95242a"
+            color: parseButton.pressed ? Style.pressedButtonColor : Style.unpressedButtonColor
         }
         onClicked: {
             obj.takeData(genderBox.currentValue)
         }
 
-        text: "PARSE DATA"
-        font.family: "Montserrat"
-        font.pointSize: 15
-        font.bold: true
+
+        contentItem: Text {
+            font.family: "Montserrat"
+            text: "PARSE DATA"
+            font.pixelSize: parent.height / 3
+            font.bold: true
+            color: Style.fontColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+        }
+
     }
     SwipeView {
         id: view
@@ -109,6 +142,7 @@ ApplicationWindow {
         anchors.leftMargin: 10
         anchors.verticalCenter: genderBox.verticalCenter
         font.pointSize: 18
+        color: Style.fontColor
         font.family: "Montserrat"
         text: "Chose a data selection: "
     }
@@ -118,12 +152,13 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.left: comboText.right
         anchors.leftMargin: 10
-        anchors.topMargin: 10
-        height: parent.height / 12
+        anchors.topMargin: 5
+        height: parent.height / 14
         width: parent.width / 4
         model: [100, 1000, 10000, 100000]
-        font.pointSize: 18
+        font.pointSize: 20
         font.family: "Montserrat"
+        Material.foreground: Style.fontColor
         Text{
             id: genderText
             anchors{
@@ -134,14 +169,14 @@ ApplicationWindow {
             font.pointSize: 16
             font.family: "Montserrat"
             font.bold: true
-            color: "white"
+            color: Style.fontColor
         }
         delegate: ItemDelegate {
             width: genderBox.width
             height: genderBox.height/1.3
             contentItem: Text {
                 text: modelData
-                color: "white"
+                color: Style.fontColor
                 font.family: "Montserrat"
                 font.pointSize: 16
                 elide: Text.ElideRight
@@ -150,9 +185,9 @@ ApplicationWindow {
             }
             background: Rectangle {
                 anchors.fill: parent
-                color: "#264F87"
+                color: Style.unpressedButtonColor
                 border.width: 1
-                border.color: "#271455"
+                border.color: Style.pressedButtonColor
             }
         }
         popup: Popup {
@@ -171,7 +206,7 @@ ApplicationWindow {
             }
 
             background: Rectangle {
-                color: "#271455"
+                color: Style.appBackColor
             }
         }
         background:Rectangle {
@@ -179,7 +214,7 @@ ApplicationWindow {
             width: parent.width
             height: parent.height
             radius: 13
-            color: "#95242a"
+            color: Style.unpressedButtonColor
             opacity: 0.7
         }
     }

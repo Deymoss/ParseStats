@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ChartStatistics.qml</file>
+        <file>DataGrid.qml</file>
+        <file>Style.qml</file>
+        <file>main.qml</file>
+    </qresource>
+    <qresource prefix="/imgs">
+        <file>icons/light.png</file>
+        <file>icons/dark.png</file>
+    </qresource>
+</RCC>

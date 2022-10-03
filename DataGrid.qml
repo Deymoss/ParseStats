@@ -3,6 +3,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs
 import com.myself 1.0
+import Style 1.0
 Page {
     id: grid
     property alias gridV: gridView
@@ -10,8 +11,9 @@ Page {
     property bool processingVisible: false
     background: Rectangle {
         anchors.fill: parent
-        color: "#996699"
+        color: Style.slideColorPrimary
     }
+
     Rectangle {
         id: loadingRect
         anchors.fill: parent
