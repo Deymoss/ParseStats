@@ -3,6 +3,7 @@ import QtQuick 2.12
 
 Item {
     property int textSize: 20
+    property int richTextSize: 25
     property bool lightTheme: true
     property color unpressedButtonColor: lightTheme ? "#505168" : "#24242D"
     property color appBackColor: lightTheme ? "#546e7a" : "#29434e"

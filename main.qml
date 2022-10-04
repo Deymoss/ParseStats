@@ -9,213 +9,137 @@ import QtQuick.Shapes 1.4
 import QtQuick.Controls.Material 2.3
 import Style 1.0
 ApplicationWindow {
+    id: theWindow
     width: 1280
     height: 720
     visible: true
-    property var allResults: []
-    property int currentPos: 0
-    Connections {
-        target: obj
-       function onSendData(data) {
-            data.forEach((one) => {
-             allResults.push(one)
-             griddate.processingVisible = true
-             timer.start()
-             })
+    property double topCoef: 1.322
+    property double bottomLenght: 0
+    property double screenStep: (theWindow.height / 2) / (theWindow.width / 4.9)
+    property int value: theWindow.width / 2
+    onValueChanged: rightCanvas.requestPaint()
+    Behavior on value {
+        NumberAnimation {
+            duration: 500
         }
     }
-    Timer {
-        id: timer
-        interval: 10
-        repeat: true
-        running: false
-        onTriggered: {
-            if(allResults.length > currentPos) {
-            griddate.modelL.append({col: allResults[currentPos] === true? "#CC0000" : "black"})
-                currentPos++
-            } else {
-                stop()
-                allResults = []
-                griddate.processingVisible = false
-            }
-        }
-
-    }
-    Rectangle {
-        anchors {
-            right: parent.right
-            rightMargin: 10
-            verticalCenter: genderBox.verticalCenter
-        }
-        height: parent.height / 14
-        width: height
-        radius: height / 2
-        color: "#5F000000"
-        Image {
-            height: parent.height / 1.3
-            width: height
-            anchors.centerIn: parent
-            fillMode: Image.PreserveAspectFit
-            source: Style.lightTheme ? "qrc:/imgs/icons/light.png" : "qrc:/imgs/icons/dark.png"
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: Style.lightTheme ? Style.lightTheme = false : Style.lightTheme = true
-        }
-    }
-
     Provider {
         id: obj
         objectName: "object"
     }
 
     Component {
-        id: gridData
-        DataGrid{}
+        id: statPg
+        StatisticsPage{}
     }
-    Component {
-        id: chartsPg
-        ChartStatistics{}
-    }
-    background: Rectangle {
-        color: Style.appBackColor
-    }
-    Button {
-        id: parseButton
-        width: parent.width/ 2
-        height: parent.height/12
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
-        anchors.horizontalCenter: parent.horizontalCenter
-        background: Rectangle {
-            anchors.fill: parent
-            radius: 5
-            color: parseButton.pressed ? Style.pressedButtonColor : Style.unpressedButtonColor
-        }
-        onClicked: {
-            obj.takeData(genderBox.currentValue)
-        }
 
-
-        contentItem: Text {
-            font.family: "Montserrat"
-            text: "PARSE DATA"
-            font.pixelSize: parent.height / 3
-            font.bold: true
-            color: Style.fontColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-        }
-
-    }
-    SwipeView {
-        id: view
-        clip: true
-        currentIndex: 0
+    Rectangle {
         anchors {
-            top: genderBox.bottom
-            bottom: parseButton.top
             left: parent.left
-            right: parent.rigth
-            bottomMargin: 20
-            topMargin: 10
+            top: parent.top
+            bottom: parent.bottom
         }
         width: parent.width
-        height: parent.height
-        Item {
-        DataGrid {
-            id: griddate
+        Canvas{
+            id: rightCanvas
             anchors.fill: parent
+            Text {
+                id: statsEntery
+                anchors {
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: parent.width/4
+                }
+                font.pointSize: Style.richTextSize
+                font.bold: true
+                font.family: "Monsterrat"
+                text: "STATISTICS"
             }
-        }
-        Item {
-            ChartStatistics {
-                id: chartsPag
+
+            onPaint:{
+                var context = getContext("2d");
+
+                // the triangle
+                context.beginPath();
+                context.moveTo(0.0);
+                context.lineTo(value + parent.width / 4.9, 0);
+                context.lineTo(value - parent.width / 4.9, parent.height);
+                context.lineTo(0, parent.height);
+                context.lineTo(0,0);
+                context.closePath();
+
+                // the fill color
+                context.fillStyle = "#08415C";
+                context.fill();
+                context.beginPath();
+                context.moveTo(parent.width, 0);
+                context.lineTo(value + parent.width / 4.9, 0);
+                context.lineTo(value - parent.width / 4.9, parent.height);
+                context.lineTo(parent.width, parent.height);
+                context.lineTo(parent.width, 0);
+                context.closePath();
+
+                // the fill color
+                context.fillStyle = "#CC2936";
+                context.fill();
+            }
+            onContextChanged: requestPaint()
+
+            MouseArea {
+                property int halfOfHeight: parent.height / 2
+                property double xtoy: mouseY < parent.height / 2? (halfOfHeight - mouseY)/1.37 : ((mouseY - halfOfHeight)/1.37) * (-1)
                 anchors.fill: parent
+                hoverEnabled: true
+                onPositionChanged: {
+                    if(mouseX > value + xtoy){
+                        value = parent.width / 4.96
+                        leftAnim.start()
+                    } else if(mouseX < value + xtoy){
+                        value = parent.width / 1.26
+                    }
+                }
+
+//                onEntered: {
+//                    if(mouseX > value + parent.width / 4.9) {
+//                        value = parent.width / 4.96
+//                    } else if(mouseX < value + parent.width / 4.9) {
+//                        value = parent.width / 1.26
+//                    }
+//                }
+
+                onClicked: {
+                    value = parent.width / 1.26
+                    console.log(screenStep)
+                }
             }
         }
+
     }
-    Text {
-        id: comboText
-        anchors.left: parent.left
-        anchors.leftMargin: 10
-        anchors.verticalCenter: genderBox.verticalCenter
-        font.pointSize: 18
-        color: Style.fontColor
-        font.family: "Montserrat"
-        text: "Chose a data selection: "
+
+    PropertyAnimation {
+        id: leftAnim
+        properties: "anchors.leftMargin"
+        from: theWindow.width / 4
+        to: theWindow.width / 3
+        duration: 500
     }
 
-    ComboBox {
-        id: genderBox
-        anchors.top: parent.top
-        anchors.left: comboText.right
-        anchors.leftMargin: 10
-        anchors.topMargin: 5
-        height: parent.height / 14
-        width: parent.width / 4
-        model: [100, 1000, 10000, 100000]
-        font.pointSize: 20
-        font.family: "Montserrat"
-        Material.foreground: Style.fontColor
-        Text{
-            id: genderText
-            anchors{
-                bottom: parent.top
-                horizontalCenter: parent.horizontalCenter
-                bottomMargin: 10
-            }
-            font.pointSize: 16
-            font.family: "Montserrat"
-            font.bold: true
-            color: Style.fontColor
+    Rectangle {
+        id: splitter
+        anchors{
+            top: parent.top
+            bottom: parent.bottom
         }
-        delegate: ItemDelegate {
-            width: genderBox.width
-            height: genderBox.height/1.3
-            contentItem: Text {
-                text: modelData
-                color: Style.fontColor
-                font.family: "Montserrat"
-                font.pointSize: 16
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-            }
-            background: Rectangle {
-                anchors.fill: parent
-                color: Style.unpressedButtonColor
-                border.width: 1
-                border.color: Style.pressedButtonColor
-            }
-        }
-        popup: Popup {
-            y: genderBox.height - 1
-            width: genderBox.width
-            implicitHeight: contentItem.implicitHeight
-            padding: 1
+        height: parent.height
+        width: 1
+        color: "black"
+        opacity: 0
+        rotation: 30
+        x: parent.width / 2
 
-            contentItem: ListView {
-                clip: true
-                implicitHeight: contentHeight
-                model: genderBox.popup.visible ? genderBox.delegateModel : null
-                currentIndex: genderBox.highlightedIndex
+    }
 
-                ScrollIndicator.vertical: ScrollIndicator { }
-            }
-
-            background: Rectangle {
-                color: Style.appBackColor
-            }
-        }
-        background:Rectangle {
-            anchors.right: parent.right
-            width: parent.width
-            height: parent.height
-            radius: 13
-            color: Style.unpressedButtonColor
-            opacity: 0.7
-        }
+    background: Rectangle {
+        color: Style.appBackColor
     }
 }
