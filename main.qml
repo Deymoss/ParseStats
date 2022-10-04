@@ -17,7 +17,14 @@ ApplicationWindow {
     property double bottomLenght: 0
     property double screenStep: (theWindow.height / 2) / (theWindow.width / 4.9)
     property int value: theWindow.width / 2
-    onValueChanged: rightCanvas.requestPaint()
+    onValueChanged: {
+        if(value > theWindow.width / 2) {
+            choseRect.state = "leftOption"
+        } else if(value < theWindow.width / 2) {
+            choseRect.state = "rightOption"
+        }
+        rightCanvas.requestPaint()
+    }
     Behavior on value {
         NumberAnimation {
             duration: 500
@@ -34,11 +41,13 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: choseRect
         anchors {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
         }
+
         width: parent.width
         Canvas{
             id: rightCanvas
@@ -52,8 +61,22 @@ ApplicationWindow {
                 }
                 font.pointSize: Style.richTextSize
                 font.bold: true
+                color: "White"
                 font.family: "Monsterrat"
                 text: "STATISTICS"
+            }
+            Text {
+                id: botEntery
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    rightMargin: parent.width/4
+                }
+                font.pointSize: Style.richTextSize
+                font.bold: true
+                color: "White"
+                font.family: "Monsterrat"
+                text: "SEEK BOT"
             }
 
             onPaint:{
@@ -93,19 +116,18 @@ ApplicationWindow {
                 onPositionChanged: {
                     if(mouseX > value + xtoy){
                         value = parent.width / 4.96
-                        leftAnim.start()
                     } else if(mouseX < value + xtoy){
                         value = parent.width / 1.26
                     }
                 }
 
-//                onEntered: {
-//                    if(mouseX > value + parent.width / 4.9) {
-//                        value = parent.width / 4.96
-//                    } else if(mouseX < value + parent.width / 4.9) {
-//                        value = parent.width / 1.26
-//                    }
-//                }
+                //                onEntered: {
+                //                    if(mouseX > value + parent.width / 4.9) {
+                //                        value = parent.width / 4.96
+                //                    } else if(mouseX < value + parent.width / 4.9) {
+                //                        value = parent.width / 1.26
+                //                    }
+                //                }
 
                 onClicked: {
                     value = parent.width / 1.26
@@ -113,33 +135,36 @@ ApplicationWindow {
                 }
             }
         }
-
-    }
-
-    PropertyAnimation {
-        id: leftAnim
-        properties: "anchors.leftMargin"
-        from: theWindow.width / 4
-        to: theWindow.width / 3
-        duration: 500
-    }
-
-    Rectangle {
-        id: splitter
-        anchors{
-            top: parent.top
-            bottom: parent.bottom
-        }
-        height: parent.height
-        width: 1
-        color: "black"
-        opacity: 0
-        rotation: 30
-        x: parent.width / 2
-
+        states:[ State {
+                name: "leftOption"
+                PropertyChanges {target: statsEntery; anchors.leftMargin: theWindow.width / 3}
+                PropertyChanges {target: botEntery; anchors.rightMargin: theWindow.width / 10}
+                PropertyChanges {target: botEntery; opacity: 0}
+            },
+            State {
+                name: "rightOption"
+                PropertyChanges {target: statsEntery; anchors.leftMargin: theWindow.width / 10}
+                PropertyChanges {target: botEntery; anchors.rightMargin: theWindow.width / 3}
+                PropertyChanges {target: statsEntery; opacity: 0}
+            }]
+        transitions: [ Transition {
+                from: "*"
+                to: "rightOption"
+                NumberAnimation { property: "anchors.rightMargin"; duration: 200}
+                NumberAnimation { property: "anchors.leftMargin"; duration: 200}
+                NumberAnimation { property: "opacity"; duration: 200}
+            },
+            Transition {
+                from: "*"
+                to: "leftOption"
+                NumberAnimation { property: "anchors.leftMargin"; duration: 200}
+                NumberAnimation { property: "anchors.rightMargin"; duration: 200}
+                NumberAnimation { property: "opacity"; duration: 200}
+            }]
     }
 
     background: Rectangle {
         color: Style.appBackColor
     }
+
 }
