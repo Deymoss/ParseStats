@@ -18,7 +18,13 @@ qt_add_executable(appParseData
 qt_add_qml_module(appParseData
     URI ParseData
     VERSION 1.0
-    QML_FILES main.qml DataGrid.qml ChartStatistics.qml Style.qml StatisticsPage.qml
+    QML_FILES main.qml
+              DataGrid.qml
+              ChartStatistics.qml
+              Style.qml
+              StatisticsPage.qml
+              MenuPage.qml
+              SettingsDialog.qml
 )
 set_target_properties(appParseData PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

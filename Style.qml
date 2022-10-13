@@ -5,10 +5,14 @@ Item {
     property int textSize: 20
     property int richTextSize: 30
     property bool lightTheme: true
-    property color unpressedButtonColor: lightTheme ? "#505168" : "#24242D"
-    property color appBackColor: lightTheme ? "#546e7a" : "#29434e"
+    //statistics colors
+    property color unpressedButtonColor: lightTheme ? "#505168" : "#054461"
+    property color appBackColor: lightTheme ? "#5F6EC2" : "#052838"
     property color pressedButtonColor: lightTheme ? "#27233A" : "#08080D"
-    property color slideColorPrimary: lightTheme ? "#C4D6B0" : "#92977E"
-    property color slideColorSecondary: lightTheme ? "#EAEFD3" : "#A9AD99"
+    property color slideColorPrimary: lightTheme ? "#95AAC9" : "#56525C"
+    property color slideColorSecondary: lightTheme ? "#DAA9AF" : "#A9AD99"
+    property color loadingColor: lightTheme ? "#9E9FB5" : "#1A7FAD"
     property color fontColor: lightTheme ? "black" : "white"
+    //bot colors
+
 }
