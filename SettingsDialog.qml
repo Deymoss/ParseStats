@@ -17,7 +17,10 @@ Dialog {
     }
     GridLayout {
         id: settingsLayout
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: drawer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
         columns: 2
         rowSpacing: 5
         Text {
@@ -61,11 +64,76 @@ Dialog {
             Layout.preferredWidth: parent.width/2
         }
         Switch {
+            id: animSwitch
             Layout.row: 1
             Layout.column: 1
             Layout.preferredWidth: parent.width/7
+            checked: true
+            onToggled: {
+                Style.animations = animSwitch.checked ? true : false
+            }
+        }
+    }
+    //This rectangle need for perfect button positioning
+    Rectangle {
+        id: drawer
+        width: 1
+        height: parent.height/5
+        color: "black"
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Button {
+        id: acceptButton
+        width: parent.width / 2.5
+        height: parent.height / 5
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 5
+        anchors.right: parent.right
+        anchors.left: drawer.right
+        anchors.verticalCenter: drawer.verticalCenter
+        background: Rectangle {
+            anchors.fill: parent
+            radius: 5
+        }
+        Text {
+            id: acceptText
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: acceptButton.pressed ? "#EC814D" : "white"
+            text: "ACCEPT"
+            font.family: "Montserrat"
+            font.pointSize: 15
+            font.bold: true
         }
 
+    }
+    Button {
+        id: declineButton
+        width: parent.width / 2.5
+        height: parent.height / 5
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 5
+        anchors.right: drawer.left
+        anchors.left: parent.left
+        anchors.verticalCenter: drawer.verticalCenter
+        background: Rectangle {
+            anchors.fill: parent
+            radius: 15
+        }
+        Text {
+            id: declineText
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: declineButton.pressed ? "#EC814D" : "white"
+            text: "DECLINE"
+            font.family: "Montserrat"
+            font.pointSize: 15
+            font.bold: true
+        }
     }
 
 }

@@ -5,6 +5,7 @@ Item {
     property int textSize: 20
     property int richTextSize: 30
     property bool lightTheme: true
+    property bool animations: true
     //statistics colors
     property color unpressedButtonColor: lightTheme ? "#505168" : "#054461"
     property color appBackColor: lightTheme ? "#5F6EC2" : "#052838"

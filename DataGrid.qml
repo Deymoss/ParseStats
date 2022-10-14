@@ -49,7 +49,8 @@ Page {
             height: gridView.cellHeight
             color: col
             radius: width/2
-            GridView.onAdd: SequentialAnimation {
+
+            GridView.onAdd:  SequentialAnimation {
                 NumberAnimation {target: circl; property: "scale"; from: 0; to: 1; duration: 5; easing.type: Easing.InOutQuad }
             }
         }

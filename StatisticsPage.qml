@@ -22,8 +22,17 @@ Page {
             data.forEach((one) => {
                              allResults.push(one)
                              griddate.processingVisible = true
-                             timer.start()
+                             if(Style.animations === true) {
+                                 timer.start()
+                                 parseButton.enabled = false
+                             } else {
+                                 griddate.modelL.append({col: one === true? "#CC0000" : "black"})
+                             }
+
                          })
+            if(allResults.length >= genderBox.currentValue && Style.animations === false) {
+                 griddate.processingVisible = false
+            }
         }
     }
     Component {
@@ -52,6 +61,7 @@ Page {
                 allResults = []
                 loadingRect.width = 0
                 buttonText.text = "PARSE DATA"
+                parseButton.enabled = true
                 griddate.processingVisible = false
             }
         }
@@ -112,7 +122,7 @@ Page {
             id: loadingRect
             height: parent.height
             anchors.centerIn: parent
-            width: parent.width * gridCount
+            width: Style.animations === true ? parent.width * gridCount : 0
             radius: 10
             color: Style.loadingColor
         }
@@ -152,7 +162,7 @@ Page {
                 id: griddate
                 anchors.fill: parent
                 gridV.onCountChanged: {
-                    if(gridV.count <= genderBox.currentValue) {
+                    if(gridV.count <= genderBox.currentValue && Style.animations === true) {
                         gridCount = gridV.count / genderBox.currentValue
                         buttonText.text = gridV.count + "/" + genderBox.currentValue + " Completed"
                     }
