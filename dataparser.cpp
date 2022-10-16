@@ -44,7 +44,7 @@ QString DataParser::addDate()
 
 QString DataParser::currentDate()
 {
-    return date.toString("dd.MM.yyyy");
+    return QDate::currentDate().toString("dd.MM.yyyy");
 }
 
 void DataParser::replyFinished(QNetworkReply *reply)

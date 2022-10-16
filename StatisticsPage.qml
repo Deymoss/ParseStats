@@ -13,6 +13,7 @@ Page {
     property double gridCount
     property var allResults: []
     property int currentPos: 0
+    property string notificationMessage: " "
     property string currentDate: obj.currentDate()
     background: Rectangle {
         color: Style.appBackColor
@@ -35,6 +36,9 @@ Page {
             if(allResults.length >= dataBox.currentValue && Style.animations === false) {
                 griddate.processingVisible = false
             }
+            obj.subDate()
+            currentDate = obj.addDate()
+
         }
     }
     Component {
@@ -60,12 +64,20 @@ Page {
                 currentPos++
             } else {
                 stop()
-                //                allResults = []
                 loadingRect.width = 0
                 buttonText.text = "PARSE DATA"
                 parseButton.enabled = true
                 griddate.processingVisible = false
             }
+        }
+    }
+    Timer {
+        id: notifyTimer
+        interval: 4000
+        running: false
+        repeat: false
+        onTriggered: {
+            notification.state = "hide"
         }
     }
 
@@ -87,13 +99,6 @@ Page {
             source: "qrc:/imgs/icons/settings.png"
         }
         color: settingsArea.pressed ? "#8F000000" : "#4F000000"
-        //        Image {
-        //            height: parent.height / 1.3
-        //            width: height
-        //            anchors.centerIn: parent
-        //            fillMode: Image.PreserveAspectFit
-        //            source: Style.lightTheme ? "qrc:/imgs/icons/light.png" : "qrc:/imgs/icons/dark.png"
-        //        } Style.lightTheme ? Style.lightTheme = false : Style.lightTheme = true
         MouseArea {
             id: settingsArea
             anchors.fill: parent
@@ -118,7 +123,14 @@ Page {
             color: parseButton.pressed ? Style.pressedButtonColor : Style.unpressedButtonColor
         }
         onClicked: {
-            obj.takeData(dataBox.currentValue)
+            if(Date.fromLocaleString(Qt.locale(),currentDate,"dd.MM.yyyy") > Date.fromLocaleString(Qt.locale(),obj.currentDate(), "dd.MM.yyyy"))
+            {
+                notificationMessage = "Ooops... it's no data here \nPlease, set today or earlier day."
+                notification.state = "show"
+                notifyTimer.start()
+            } else {
+                obj.takeData(dataBox.currentValue)
+            }
         }
         Rectangle {
             id: loadingRect
@@ -189,7 +201,7 @@ Page {
         font.family: "Montserrat"
         style: Text.Raised
         verticalAlignment: Text.AlignVCenter
-        text: "Data selection: "
+        text: "Start date: "
     }
 
     Rectangle {
@@ -199,7 +211,7 @@ Page {
         anchors {
             left: dataBox.right
             top: dateText.bottom
-            leftMargin: parent.width / 7
+            leftMargin: parent.width / 9
             topMargin: 5
         }
         radius: 0
@@ -224,7 +236,7 @@ Page {
 
             width: height
             height: parent.height
-            color: Style.unpressedButtonColor
+            color: leftArrowArea.pressed ? Style.pressedButtonColor : Style.unpressedButtonColor
             radius: 7
             Image {
                 anchors.centerIn: parent
@@ -236,6 +248,7 @@ Page {
                 antialiasing: true
             }
             MouseArea {
+                id: leftArrowArea
                 anchors.fill: parent
                 onClicked: {
                     currentDate = obj.subDate();
@@ -261,7 +274,7 @@ Page {
             }
             width: height
             height: parent.height
-            color: Style.unpressedButtonColor
+            color: rightArrowArea.pressed ? Style.pressedButtonColor : Style.unpressedButtonColor
             radius: 7
             Image {
                 anchors.centerIn: parent
@@ -273,17 +286,20 @@ Page {
                 antialiasing: true
             }
             MouseArea {
+                id: rightArrowArea
                 anchors.fill: parent
                 onClicked: {
                     currentDate = obj.addDate();
+
                 }
             }
         }
         Text {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.pointSize: 15
+            font.pixelSize: parent.height / 2
             anchors.centerIn: parent
+            color: Style.fontColor
             text: currentDate
         }
     }
@@ -373,5 +389,83 @@ Page {
             color: Style.unpressedButtonColor
             opacity: 0.7
         }
+    }
+
+
+    Rectangle {
+        id: notification
+        radius: 15
+        anchors {
+            top: parent.top
+            horizontalCenter: parent.horizontalCenter
+            topMargin: -parent.height / 10
+        }
+        Text{
+            id: notificationHeader
+            font.family: "Montserrat"
+            font.pixelSize: parent.height / 3.5
+            font.bold: true
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: "Notification"
+            color: "white"
+            anchors {
+                top: parent.top
+                horizontalCenter: parent.horizontalCenter
+                topMargin: parent.height / 20
+            }
+
+        }
+        Text{
+            id: notificationText
+            font.family: "Montserrat"
+            font.pixelSize: parent.height / 4.5
+            font.bold: false
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: notificationMessage
+            color: "white"
+            anchors {
+                top: notificationHeader.bottom
+                horizontalCenter: parent.horizontalCenter
+                topMargin: parent.height / 40
+            }
+
+        }
+        width: parent.width / 3
+        height: parent.height/10
+        opacity: 1
+        color: "#8F000000"
+        states:[ State {
+                name: "show"
+                PropertyChanges {
+                    target: notification
+                    anchors.topMargin: parent.height / 10
+                    opacity: 1
+                }
+            },
+            State {
+                name: "hide"
+                PropertyChanges {
+                    target: notification
+                    anchors.topMargin: -parent.height / 10
+                    opacity: 0
+                }
+            }
+        ]
+        transitions: [ Transition {
+                from: "*"
+                to: "show"
+                NumberAnimation { property: "anchors.topMargin"; duration: 200}
+                NumberAnimation { property: "opacity"; duration: 200}
+
+            },
+            Transition {
+                from: "*"
+                to: "hide"
+                NumberAnimation { property: "anchors.topMargin"; duration: 200}
+                NumberAnimation { property: "opacity"; duration: 200}
+
+            }]
     }
 }
