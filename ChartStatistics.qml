@@ -14,25 +14,32 @@ Page {
     property var stats: []
     property var otherSlice
     property var otherBar
-    property var updatedStats: []
+    property int xaxisLast: 0
+    property int yaxisHeight: 0
     Connections {
         target: obj
         function onEndOfProcess() {
             stats = obj.takeStats()
             console.log(stats)
+            pieInner.clear()
+            scatterSeries.clear()
+            lineSeries.clear()
             for(var i = 0; i < stats.length; i++) {
-                if(stats[i] > 0) {
-                    otherSlice =  pieInner.append(i+" in a row", stats[i])
+                if(stats[i] > 0) {  
+                    otherSlice = pieInner.append(i+" in a row", stats[i])
                     otherSlice.color = Qt.hsva(Math.random(),1,0.7,1);
                     lineSeries.append(i,stats[i])
-                    series2.append(i, stats[i])
-                    updatedStats.push(stats[i])
+                    scatterSeries.append(i, stats[i])
                     //                    qwe.append(stats[i])
                     //                    qwe.color = Qt.hsva(Math.random(),1,0.7,1);
+                    xaxisLast = i
                 }
+
             }
-            xAxis.max = updatedStats.length + 3
-            yAxis.max = updatedStats[0] * 1.1
+
+            xAxis.max = xaxisLast + 3
+           // console.log(updatedStats.length)
+            yAxis.max = stats[1]*1.1
             xAxis.applyNiceNumbers()
             yAxis.applyNiceNumbers()
         }
@@ -125,7 +132,7 @@ Page {
         }
 
         ScatterSeries {
-            id: series2
+            id: scatterSeries
             axisX: xAxis
             axisY: yAxis
             color: "#3914AF"

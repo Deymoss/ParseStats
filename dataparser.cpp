@@ -1,14 +1,12 @@
 #include "dataparser.h"
 
 DataParser::DataParser(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), m_networkManager(new QNetworkAccessManager(this)),m_networkRequest(new QNetworkRequest)
 {
-    m_networkManager = new QNetworkAccessManager(this);
-    m_networkRequest = new QNetworkRequest;
-    connect(m_networkManager,
-            SIGNAL(finished(QNetworkReply *)),
+    connect(m_networkManager.data(),
+            &QNetworkAccessManager::finished,
             this,
-            SLOT(replyFinished(QNetworkReply *)));
+            &DataParser::replyFinished);
     stats.reserve(20);
 }
 
@@ -70,7 +68,6 @@ void DataParser::replyFinished(QNetworkReply *reply)
 }
 DataParser::~DataParser()
 {
-    delete m_networkRequest;
 }
 
 QVariantList DataParser::parseData()

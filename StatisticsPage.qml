@@ -58,7 +58,7 @@ Page {
                 currentPos++
             } else {
                 stop()
-                allResults = []
+//                allResults = []
                 loadingRect.width = 0
                 buttonText.text = "PARSE DATA"
                 parseButton.enabled = true

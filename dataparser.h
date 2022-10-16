@@ -27,8 +27,8 @@ public:
     Q_INVOKABLE QVector<int> takeStats();
     ~DataParser();
 private:
-    QNetworkAccessManager *m_networkManager = nullptr;
-    QNetworkRequest       *m_networkRequest = nullptr;
+    QScopedPointer<QNetworkAccessManager> m_networkManager;
+    QScopedPointer<QNetworkRequest> m_networkRequest;
     QString m_domain;
     QString m_request;
     QString data;
