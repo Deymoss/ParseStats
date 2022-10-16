@@ -14,6 +14,7 @@ Item {
     property color slideColorSecondary: lightTheme ? "#DAA9AF" : "#A9AD99"
     property color loadingColor: lightTheme ? "#9E9FB5" : "#1A7FAD"
     property color fontColor: lightTheme ? "black" : "white"
+    property color dialogHeader: lightTheme ? "#323F85" : "black"
     //bot colors
 
 }

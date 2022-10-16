@@ -10,5 +10,9 @@
         <file>icons/light.png</file>
         <file>icons/dark.png</file>
         <file>icons/settings.png</file>
+        <file>icons/leftArrow.png</file>
+        <file>icons/rightArrow.png</file>
+        <file>icons/leftArrow_night.png</file>
+        <file>icons/rightArrow_night.png</file>
     </qresource>
 </RCC>

@@ -25,6 +25,9 @@ public:
     void requestFunc(int date);
     Q_INVOKABLE void takeData(const int amount);
     Q_INVOKABLE QVector<int> takeStats();
+    Q_INVOKABLE QString subDate();
+    Q_INVOKABLE QString addDate();
+    Q_INVOKABLE QString currentDate();
     ~DataParser();
 private:
     QScopedPointer<QNetworkAccessManager> m_networkManager;

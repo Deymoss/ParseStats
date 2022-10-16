@@ -13,9 +13,11 @@ Page {
     property double gridCount
     property var allResults: []
     property int currentPos: 0
+    property string currentDate: obj.currentDate()
     background: Rectangle {
         color: Style.appBackColor
     }
+
     Connections {
         target: obj
         function onSendData(data) {
@@ -30,8 +32,8 @@ Page {
                              }
 
                          })
-            if(allResults.length >= genderBox.currentValue && Style.animations === false) {
-                 griddate.processingVisible = false
+            if(allResults.length >= dataBox.currentValue && Style.animations === false) {
+                griddate.processingVisible = false
             }
         }
     }
@@ -58,7 +60,7 @@ Page {
                 currentPos++
             } else {
                 stop()
-//                allResults = []
+                //                allResults = []
                 loadingRect.width = 0
                 buttonText.text = "PARSE DATA"
                 parseButton.enabled = true
@@ -72,7 +74,7 @@ Page {
         anchors {
             right: parent.right
             rightMargin: 10
-            verticalCenter: genderBox.verticalCenter
+            verticalCenter: dataBox.verticalCenter
         }
         height: parent.height / 14
         width: height
@@ -116,7 +118,7 @@ Page {
             color: parseButton.pressed ? Style.pressedButtonColor : Style.unpressedButtonColor
         }
         onClicked: {
-            obj.takeData(genderBox.currentValue)
+            obj.takeData(dataBox.currentValue)
         }
         Rectangle {
             id: loadingRect
@@ -148,7 +150,7 @@ Page {
         clip: true
         currentIndex: 0
         anchors {
-            top: genderBox.bottom
+            top: dataBox.bottom
             bottom: parseButton.top
             left: parent.left
             right: parent.rigth
@@ -162,9 +164,9 @@ Page {
                 id: griddate
                 anchors.fill: parent
                 gridV.onCountChanged: {
-                    if(gridV.count <= genderBox.currentValue && Style.animations === true) {
-                        gridCount = gridV.count / genderBox.currentValue
-                        buttonText.text = gridV.count + "/" + genderBox.currentValue + " Completed"
+                    if(gridV.count <= dataBox.currentValue && Style.animations === true) {
+                        gridCount = gridV.count / dataBox.currentValue
+                        buttonText.text = gridV.count + "/" + dataBox.currentValue + " Completed"
                     }
                 }
             }
@@ -177,25 +179,136 @@ Page {
         }
     }
 
+    Text {
+        id: dateText
+        anchors.top: parent.top
+        anchors.horizontalCenter: dateLine.horizontalCenter
+        font.pointSize: 16
+        horizontalAlignment: Text.AlignHCenter
+        color: Style.fontColor
+        font.family: "Montserrat"
+        style: Text.Raised
+        verticalAlignment: Text.AlignVCenter
+        text: "Data selection: "
+    }
+
+    Rectangle {
+        id:dateLine
+        height: parent.height / 14
+        width: parent.width / 4
+        anchors {
+            left: dataBox.right
+            top: dateText.bottom
+            leftMargin: parent.width / 7
+            topMargin: 5
+        }
+        radius: 0
+        color: Style.unpressedButtonColor
+        opacity: 1
+        Rectangle {
+            id: leftArrow
+            anchors {
+                right: parent.left
+                verticalCenter: parent.verticalCenter
+                rightMargin: -5
+            }
+            Rectangle {
+                anchors {
+                    right:parent.right
+                    verticalCenter: parent.verticalCenter
+                }
+                height: parent.height
+                width: 1
+                color: Style.fontColor
+            }
+
+            width: height
+            height: parent.height
+            color: Style.unpressedButtonColor
+            radius: 7
+            Image {
+                anchors.centerIn: parent
+                height: parent.height / 1.2
+                width: height
+                source: Style.lightTheme ? "qrc:/imgs/icons/leftArrow.png" : "qrc:/imgs/icons/leftArrow_night.png"
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                antialiasing: true
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    currentDate = obj.subDate();
+                }
+            }
+        }
+
+        Rectangle {
+            id: rightArrow
+            anchors {
+                left: parent.right
+                verticalCenter: parent.verticalCenter
+                leftMargin: -5
+            }
+            Rectangle {
+                anchors {
+                    left:parent.left
+                    verticalCenter: parent.verticalCenter
+                }
+                height: parent.height
+                width: 1
+                color: Style.fontColor
+            }
+            width: height
+            height: parent.height
+            color: Style.unpressedButtonColor
+            radius: 7
+            Image {
+                anchors.centerIn: parent
+                height: parent.height / 1.2
+                width: height
+                source: Style.lightTheme ? "qrc:/imgs/icons/rightArrow.png" : "qrc:/imgs/icons/rightArrow_night.png"
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                antialiasing: true
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    currentDate = obj.addDate();
+                }
+            }
+        }
+        Text {
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.pointSize: 15
+            anchors.centerIn: parent
+            text: currentDate
+        }
+    }
 
     Text {
         id: comboText
         anchors.left: parent.left
-        anchors.leftMargin: parent.width / 3
-        anchors.verticalCenter: genderBox.verticalCenter
+        anchors.leftMargin: 20
+        anchors.top: parent.top
+        anchors.horizontalCenter: dataBox.horizontalCenter
         font.pointSize: 16
+        horizontalAlignment: Text.AlignHCenter
         color: Style.fontColor
         font.family: "Montserrat"
+        style: Text.Raised
+        verticalAlignment: Text.AlignVCenter
         text: "Data selection: "
     }
 
 
     ComboBox {
-        id: genderBox
-        anchors.top: parent.top
-        anchors.left: comboText.right
+        id: dataBox
+        anchors.top: comboText.bottom
+        anchors.left: parent.left
         anchors.leftMargin: 10
-        anchors.topMargin: 5
         height: parent.height / 14
         width: parent.width / 4
         model: [100, 1000, 10000, 100000]
@@ -215,8 +328,8 @@ Page {
             color: Style.fontColor
         }
         delegate: ItemDelegate {
-            width: genderBox.width
-            height: genderBox.height/1.3
+            width: dataBox.width
+            height: dataBox.height/1.3
             contentItem: Text {
                 text: modelData
                 color: Style.fontColor
@@ -234,16 +347,16 @@ Page {
             }
         }
         popup: Popup {
-            y: genderBox.height - 1
-            width: genderBox.width
+            y: dataBox.height - 1
+            width: dataBox.width
             implicitHeight: contentItem.implicitHeight
             padding: 1
 
             contentItem: ListView {
                 clip: true
                 implicitHeight: contentHeight
-                model: genderBox.popup.visible ? genderBox.delegateModel : null
-                currentIndex: genderBox.highlightedIndex
+                model: dataBox.popup.visible ? dataBox.delegateModel : null
+                currentIndex: dataBox.highlightedIndex
 
                 ScrollIndicator.vertical: ScrollIndicator { }
             }

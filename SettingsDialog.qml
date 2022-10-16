@@ -15,6 +15,34 @@ Dialog {
         radius: parent.width / 20
         color: Style.appBackColor
     }
+
+    header:        Item {
+        width: parent.width
+        height: parent.height/6
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        clip: true
+
+        Rectangle {
+            anchors.fill: parent
+            anchors.bottomMargin: -radius
+            radius: parent.width / 20
+            color: Style.dialogHeader
+            opacity: 1
+            Text {
+                font.family: "Montserrat"
+                text: "SETTINGS"
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                color: Style.fontColor
+                font.pointSize: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: parent.height / 7
+            }
+        }
+    }
+
     GridLayout {
         id: settingsLayout
         anchors.top: parent.top
@@ -22,7 +50,7 @@ Dialog {
         anchors.left: parent.left
         anchors.right: parent.right
         columns: 2
-        rowSpacing: 5
+        rowSpacing: 0
         Text {
             font.family: "Montserrat"
             text: "Choose theme: "
@@ -79,10 +107,9 @@ Dialog {
     Button {
         id: acceptButton
         width: parent.width / 1.05
-        height: parent.height / 5
+        height: parent.height / 4
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.margins: 5
         background: Rectangle {
             anchors.fill: parent
             radius: 5
