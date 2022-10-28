@@ -40,6 +40,12 @@ Page {
             currentDate = obj.addDate()
 
         }
+        function onConnectionError() {
+            notificationHeader.text = "Error"
+            notificationMessage = "Check your internet connection"
+            notification.state = "show"
+            notifyTimer.start()
+        }
     }
     Component {
         id: gridData
@@ -64,6 +70,7 @@ Page {
                 currentPos++
             } else {
                 stop()
+                console.log(allResults.length)
                 loadingRect.width = 0
                 buttonText.text = "PARSE DATA"
                 parseButton.enabled = true
@@ -125,6 +132,7 @@ Page {
         onClicked: {
             if(Date.fromLocaleString(Qt.locale(),currentDate,"dd.MM.yyyy") > Date.fromLocaleString(Qt.locale(),obj.currentDate(), "dd.MM.yyyy"))
             {
+                notificationHeader.text = "Notification"
                 notificationMessage = "Ooops... it's no data here \nPlease, set today or earlier day."
                 notification.state = "show"
                 notifyTimer.start()

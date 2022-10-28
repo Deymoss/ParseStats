@@ -52,6 +52,7 @@ private slots:
 signals:
     void sendData(QVariantList data);
     void endOfProcess();
+    void connectionError();
 };
 
 #endif // DATAPARSER_H

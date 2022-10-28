@@ -50,6 +50,9 @@ QString DataParser::currentDate()
 void DataParser::replyFinished(QNetworkReply *reply)
 {
     data = reply->readAll();
+    if(data.isEmpty()) {
+        emit connectionError();
+    }
     QJsonDocument d = QJsonDocument::fromJson(data.toUtf8()); //data to JsonDocument
     QJsonObject sett2 = d.object();
     if (page > sett2["pages"].toInt()) {
@@ -77,6 +80,8 @@ void DataParser::replyFinished(QNetworkReply *reply)
         if (currentAmount <= amount) {
             takeData(amount);
         } else {
+            currentAmount = 0;
+            amount = 0;
             emit endOfProcess();
         }
     }
@@ -86,12 +91,12 @@ DataParser::~DataParser() {}
 QVariantList DataParser::parseData()
 {
     QVariantList results;
-    QJsonDocument d = QJsonDocument::fromJson(data.toUtf8()); //data to JsonDocument
-    QJsonObject sett2 = d.object();                           // take object from document
-    QJsonArray array = sett2["runs"].toArray();               // take array of runs
+    QJsonDocument document = QJsonDocument::fromJson(data.toUtf8()); //data to JsonDocument
+    QJsonObject runs = document.object();                           // take object from document
+    QJsonArray array = runs["runs"].toArray();               // take array of runs
     for (qsizetype i = array.size(); i != 0; i--) {
-        QJsonValue val = array.at(i); // take element of array (0,1,2 runs)
-        QJsonObject loopObj = val.toObject();
+        QJsonValue value = array.at(i); // take element of array (0,1,2 runs)
+        QJsonObject loopObj = value.toObject();
         QJsonObject resultsObj = loopObj["results"].toObject(); //take nested json results
         if (resultsObj["player"].toString().contains('d')
             || resultsObj["player"].toString().contains('h')) {
